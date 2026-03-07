@@ -114,11 +114,6 @@ def top_titles(content_type):
     elif content_type == 3:  
         return top_views_list[:top_views]
                    
-def add_serial_season():
-    """funkcja dodaje do biblioteki cały sezon serialu po dostarczeniu do niej tytułu, rok wydania 
-    gatunku, numer sezonu, liczba odcinków do dodania"""
-    return
-
 def episode_number(serial_title):
     """funkcja wyświetla liczbę dostępnych odcinków serialu"""
     filtered = []

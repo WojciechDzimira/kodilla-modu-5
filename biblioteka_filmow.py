@@ -1,6 +1,8 @@
 import logging
+import random
 from faker import Faker
 fake = Faker('pl_PL')
+logging.basicConfig(level=logging.DEBUG)
 
 class Film:
     """ klasa reprezentująca filmy """
@@ -33,22 +35,54 @@ class Serial(Film):
         print(f"{self.title} S{self.season_number:02}E{self.episode_number:02}.")
         self.views_number += 1
     
+def int_input(text):
+    """Funkcja prosi uzytkownika o liczbę całkowitą i sprawdza czy 
+    uzytkownik faktycznie wprowadził liczbę calkowita"""
+    while True:
+        try:
+            number = int(input(f"{text}"))
+            if number > -1:
+                return number
+            else:
+                print("to nie jest dodatnia liczba całkowita, wprowadz jeszcze raz.")
+                logging.warning(f"Użytkownik wprowadził liczbę ujemną")
+        except ValueError:
+            print("to nie jest liczba całkowita, wprowadz jeszcze raz.")
+            logging.warning(f"Użytkownik wprowadził wartośc nie będącą liczbą")
 
 def get_movies():
     """funkcja filtruje listę i zwraca tylko filmy"""
-    return
+    film_list = []
+    for record in library_list:
+        if type(record) == Film:
+            film_list.append(record)
+    return sorted(film_list, key=lambda x: x.title)
+    
 def get_series():
     """funkcja filtruje liste i zwraca tylko seriale"""
-    return
+    serial_list = []
+    for record in library_list:
+        if type(record) == Serial:
+            serial_list.append(record)
+    return sorted(serial_list, key=lambda x: x.title)
+    
 def generate_views():
-    """wynkcja wybiera element z biblioteki i dodaje mu losowe wyświetlenia w zakresie od 1 do 100"""
+    """funkcja wybiera element z biblioteki i dodaje mu losowe wyświetlenia w zakresie od 1 do 100"""
+    record = random.randrange(len(library_list))
+    library_list[record].views_number = random.randint(1, 100)
     return
 def use_generate_views():
     """funkcja uruchamia funkcje generate_views() 10 razy"""
-    return
+    for _ in range(10):
+        generate_views()
+
 
 def top_titles():
     """funkcja wyświetla wybraną ilość najpopularniejszych tytułów w bibliotece"""
+    top_views_list = []
+    top_views_list = sorted(library_list, key=lambda x: x.views_number, reverse=True)
+
+    
     return
 def add_serial_season():
     """funkcja dodaje do biblioteki cały sezon serialu po dostarczeniu do niej tytułu, rok wydania 
@@ -56,9 +90,57 @@ def add_serial_season():
     return
 def episode_number():
     """funkcja wyświetla liczbę dostępnych odcinków serialu"""
+    return
 
 
-if __name__ == "__main__":        
-    logging.basicConfig(level=logging.DEBUG)
+
+def populate_library():
+    """funkcja wypełnia biblioteke losowymi danymi filmów i seriali używając faker, 
+    oraz daje możliwość wprowadzenia własnych rekordów biblioteki"""
+
+    genre_list = ["dramaty", "komedia", "tragedia", "fantasy", "horror", "przygodowy", "Sci-fi", "akcja"]
+    print("UZUPEŁNIANIE BIBLIOTEKI LOSOWYMI FILMAMI/SERIALAMI")
+    number_of_films = int_input("Podaj ile losowych filmów chcesz mieć w bibliotece? Wpisz liczbę całkowitą lub 0: ")
+    number_of_serials = int_input("Podaj ile losowych seriali ma znaleźć się w bibliotece: kazdy bedzie miał 3 sezony po 15 odcinków. Wpisz liczbę całkowitą lub 0: ")
+
+    if number_of_films > 0:
+        for i in range(number_of_films):
+            film = Film(
+            title = fake.catch_phrase(),
+            production_year = fake.year(),
+            genre = fake.random_element(genre_list), 
+            views_number = 0
+            )
+            library_list.append(film)
+    
+    if number_of_serials > 0:
+        for i in range(number_of_serials):
+            title = fake.catch_phrase()
+            production_year = fake.year()
+            genre = fake.random_element(genre_list) 
+            for x in range(3):
+                for z in range(15):
+                    serial = Serial(
+                    title = title, 
+                    production_year = production_year,
+                    genre = genre,
+                    views_number = 0,
+                    episode_number = z + 1,
+                    season_number = x + 1 
+                    )
+                    library_list.append(serial)
+
+    return library_list
+
+    #while True:
+     #   manual_record_entry = input("chcesz wprowadzić ręcznie serial lub film? jeśli tak wpisz T, jeśli nie wpisz cokolwiek ")
+      #  if manual_record_entry != "t":
+      #     break   
+        
+            
+if __name__ == "__main__":   
+    library_list = []         
+    library_list = populate_library()
+    print(len(library_list))
     
     

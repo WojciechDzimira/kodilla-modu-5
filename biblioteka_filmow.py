@@ -13,7 +13,7 @@ class Film:
     def play(self):
         """metoda wyświetla tytuł i rok wydania filmu"""
         print(f"{self.title} {self.year}.")
-        self.views_number
+        self.views_number += 1
 
   
     
@@ -31,8 +31,31 @@ class Serial(Film):
     def play(self):
         """metoda wyświetla tytuł numer sezonu i nr odcinka"""
         print(f"{self.title} S{self.season_number:02}E{self.episode_number:02}.")
-  
-  
+        self.views_number += 1
+    
+
+def get_movies():
+    """funkcja filtruje listę i zwraca tylko filmy"""
+    return
+def get_series():
+    """funkcja filtruje liste i zwraca tylko seriale"""
+    return
+def generate_views():
+    """wynkcja wybiera element z biblioteki i dodaje mu losowe wyświetlenia w zakresie od 1 do 100"""
+    return
+def use_generate_views():
+    """funkcja uruchamia funkcje generate_views() 10 razy"""
+    return
+
+def top_titles():
+    """funkcja wyświetla wybraną ilość najpopularniejszych tytułów w bibliotece"""
+    return
+def add_serial_season():
+    """funkcja dodaje do biblioteki cały sezon serialu po dostarczeniu do niej tytułu, rok wydania 
+    gatunku, numer sezonu, liczba odcinków do dodania"""
+    return
+def episode_number():
+    """funkcja wyświetla liczbę dostępnych odcinków serialu"""
 
 
 if __name__ == "__main__":        

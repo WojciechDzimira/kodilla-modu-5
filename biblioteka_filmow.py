@@ -4,28 +4,30 @@ fake = Faker('pl_PL')
 
 class Film:
     """ klasa reprezentująca filmy """
-    def __init__(self, film_title, film_year, film_genre, film_play_number, **kwargs):
-        self.title = film_title
-        self.year = film_year
-        self.genre = film_genre
-        self.play_number = film_play_number
-        logging.debug(f"Do biblioteki dodano film {film_title} {film_year}")
+    def __init__(self, title, production_year, genre, views_number, **kwargs):
+        self.title = title
+        self.year = production_year
+        self.genre = genre
+        self.views_number = views_number
+        logging.debug(f"Do biblioteki dodano film {title} {production_year}")
     def play(self):
         """metoda wyświetla tytuł i rok wydania filmu"""
         print(f"{self.title} {self.year}.")
+        self.views_number
+
   
     
 class Serial(Film):
-    def __init__(self, film_title, film_year, film_genre, film_play_number, serial_episode_number, serial_season_number, **kwargs):
+    def __init__(self, title, production_year, genre, views_number, episode_number, season_number, **kwargs):
         super().__init__(
-            film_title = film_title, 
-            film_year = film_year, 
-            film_genre = film_genre, 
-            film_play_number = film_play_number, 
+            title = title, 
+            production_year = production_year, 
+            genre = genre, 
+            views_number = views_number, 
             **kwargs)
-        self.episode_number = serial_episode_number
-        self.season_number = serial_season_number
-        logging.debug(f"Rozszerzono bibliotekę o serial: {film_title}, sezon:{self.season_number}, odcinek: {self.episode_number}")
+        self.episode_number = episode_number
+        self.season_number = season_number
+        logging.debug(f"Rozszerzono bibliotekę o serial: {title}, sezon:{self.season_number:02}, odcinek: {self.episode_number:02}")
     def play(self):
         """metoda wyświetla tytuł numer sezonu i nr odcinka"""
         print(f"{self.title} S{self.season_number:02}E{self.episode_number:02}.")

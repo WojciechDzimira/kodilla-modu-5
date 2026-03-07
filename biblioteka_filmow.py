@@ -2,6 +2,7 @@ import logging
 import random
 from faker import Faker
 fake = Faker('pl_PL')
+from datetime import datetime
 logging.basicConfig(level=logging.DEBUG)
 
 class Film:
@@ -50,7 +51,7 @@ def int_input(text):
 
 def choose_content_type():
     """"Funkcja wyboru rodzaju wyświetlanych najpopularniejszych tytułów z biblioteki"""
-    print("1: Najpoipularniejsze Filmy \n2: Najpopularniejsze Seriale \n3: Najpopularniejsze Ogólnie")
+    print("1: Najpopularniejsze Filmy \n2: Najpopularniejsze Seriale \n3: Najpopularniejsze Ogólnie")
     while True:
         choice = int_input("Wpisz 1, 2 lub 3: ")
         if choice  in {1, 2, 3}:
@@ -78,7 +79,7 @@ def get_series():
 def generate_views():
     """funkcja wybiera element z biblioteki i dodaje mu losowe wyświetlenia w zakresie od 1 do 100"""
     record = random.randrange(len(library_list))
-    library_list[record].views_number = random.randint(1, 100)
+    library_list[record].views_number += random.randint(1, 100)
     return
 
 def use_generate_views():
@@ -116,6 +117,7 @@ def add_serial_season():
     """funkcja dodaje do biblioteki cały sezon serialu po dostarczeniu do niej tytułu, rok wydania 
     gatunku, numer sezonu, liczba odcinków do dodania"""
     return
+
 def episode_number(serial_title):
     """funkcja wyświetla liczbę dostępnych odcinków serialu"""
 
@@ -126,8 +128,16 @@ def episode_number(serial_title):
             filtered.append(record)
     return len(filtered)
 
-
-
+def add_serial_season(title, year, genre, views_number, episodes_number, season_number):
+    serial = Serial(
+        title = title, 
+        production_year = year,
+        genre = genre,
+        views_number = views_number,
+        episode_number = episodes_number,
+        season_number = season_number 
+        )
+    return(serial)
 
 def populate_library():
     """funkcja wypełnia biblioteke losowymi danymi filmów i seriali używając faker"""
@@ -154,25 +164,42 @@ def populate_library():
             genre = fake.random_element(genre_list) 
             for x in range(3):
                 for z in range(15):
-                    serial = Serial(
-                    title = title, 
-                    production_year = production_year,
-                    genre = genre,
-                    views_number = 0,
-                    episode_number = z + 1,
-                    season_number = x + 1 
-                    )
-                    library_list.append(serial)
+                    season_number = x + 1
+                    episodes_number = z +1
+                    views_number = 0
+                    library_list.append(add_serial_season(title, production_year, genre, views_number, episodes_number, season_number))
 
     return library_list
 
-       
+def search(text):
+    """funkcja wyszukuje film lub serial po jego tytule"""
+    text = text.lower()
+    for record in library_list:
+        if text == record.title.lower():
+            return record
+           
+    print("Brak wyszukiwanego tytułu w bibliotece")
+    logging.warning(f"Użytkownik próbował wyszukać tytuł którego nie ma w bibliotece")
+    return None
+    
+        
         
             
-if __name__ == "__main__":   
-    library_list = []    
+if __name__ == "__main__":  
+    today_datetime = datetime.now().strftime("%d.%m.%Y")
+    library_list = []
+
     top = []     
+    print("Biblioteka filmów")
     library_list = populate_library()
+    use_generate_views()
+    print(f"Najpopularniejsze filmy i seriale dnia {today_datetime}: ")
     top = top_titles(choose_content_type())
+    for record in top:
+        if type(record) == Film:
+            print(f"nr{i}: {top[i].title}, liczba wyświetleń {top[i].views_number}")
+        else:
+            print(f"nr{i}: {top[i].title}, S{top[i].season_number:02d}E{top[i].episodes_number} liczba wyświetleń {top[i].views_number}")
+
     
     

@@ -19,6 +19,7 @@ class Film:
         self.views_number += 1
 
 class Serial(Film):
+    """ klasa reprezentująca seriale, dziedzicząca po klasie Film """
     def __init__(self, title, production_year, genre, views_number, episode_number, season_number, **kwargs):
         super().__init__(
             title = title, 
@@ -120,21 +121,20 @@ def add_serial_season():
 
 def episode_number(serial_title):
     """funkcja wyświetla liczbę dostępnych odcinków serialu"""
-
-     
     filtered = []
     for record in library_list:
         if record.title == serial_title:
             filtered.append(record)
     return len(filtered)
 
-def add_serial_season(title, year, genre, views_number, episodes_number, season_number):
+def add_serial_season(title, year, genre, views_number, episode_number, season_number):
+    """Funkcja dodaje cały sezon serialu"""
     serial = Serial(
         title = title, 
         production_year = year,
         genre = genre,
         views_number = views_number,
-        episode_number = episodes_number,
+        episode_number = episode_number,
         season_number = season_number 
         )
     return(serial)
@@ -195,11 +195,11 @@ if __name__ == "__main__":
     use_generate_views()
     print(f"Najpopularniejsze filmy i seriale dnia {today_datetime}: ")
     top = top_titles(choose_content_type())
-    for record in top:
+    for i, record in enumerate (top, start=1):
         if type(record) == Film:
-            print(f"nr{i}: {top[i].title}, liczba wyświetleń {top[i].views_number}")
+            print(f"nr{i}: {record.title}, liczba wyświetleń {record.views_number}")
         else:
-            print(f"nr{i}: {top[i].title}, S{top[i].season_number:02d}E{top[i].episodes_number} liczba wyświetleń {top[i].views_number}")
+            print(f"nr{i}: {record.title}, S{record.season_number:02d}E{record.episode_number} liczba wyświetleń {record.views_number}")
 
     
     

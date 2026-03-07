@@ -199,7 +199,4 @@ if __name__ == "__main__":
         if type(record) == Film:
             print(f"nr{i}: {record.title}, liczba wyświetleń {record.views_number}")
         else:
-            print(f"nr{i}: {record.title}, S{record.season_number:02d}E{record.episode_number} liczba wyświetleń {record.views_number}")
-
-    
-    
+            print(f"nr{i}: {record.title}, S{record.season_number:02d}E{record.episode_number:02d} liczba wyświetleń {record.views_number}")

@@ -1,4 +1,5 @@
 import logging
+import json
 import random
 from faker import Faker
 fake = Faker('pl_PL')
@@ -174,14 +175,33 @@ def search(text):
     print("Brak wyszukiwanego tytułu w bibliotece")
     logging.warning(f"Użytkownik próbował wyszukać tytuł którego nie ma w bibliotece")
     return None
+
+def library_to_dicts(library_list):
+    """Konwertuje listę obiektów Film/Serial na listę słowników"""
+    result = []   
+    for i, record in enumerate(library_list, start=1): 
+        rekord_dict = {   
+            "record_id" : i,            
+            "type": "Film" if type(record) == Film else "Serial",  
+            "title": record.title,
+            "year": record.year,
+            "genre": record.genre,
+            "views": record.views_number,
+        }
+        if type(record) == Serial:
+            rekord_dict["episode_number"] = record.episode_number
+            rekord_dict["season_number"] = record.season_number
+        
+        result.append(rekord_dict) 
     
+    return result    
         
         
             
 if __name__ == "__main__":  
     today_datetime = datetime.now().strftime("%d.%m.%Y")
     library_list = []
-
+    library_dict = {}
     top = []     
     print("Biblioteka filmów")
     library_list = populate_library()
@@ -193,3 +213,7 @@ if __name__ == "__main__":
             print(f"nr{i}: {record.title}, liczba wyświetleń {record.views_number}")
         else:
             print(f"nr{i}: {record.title}, S{record.season_number:02d}E{record.episode_number:02d} liczba wyświetleń {record.views_number}")
+   
+    library_dict = library_to_dicts(library_list)
+    with open("dbibliotek.json", "w", encoding="utf-8") as f:
+        json.dump(library_dict, f, ensure_ascii=False, indent=4)

@@ -177,7 +177,7 @@ def search(text):
     return None
 
 def library_to_dicts(library_list):
-    """Konwertuje listę obiektów Film/Serial na listę słowników"""
+    """Funkcja konwertuje listę obiektów Film/Serial na listę słowników"""
     result = []   
     for i, record in enumerate(library_list, start=1): 
         rekord_dict = {   
@@ -195,17 +195,51 @@ def library_to_dicts(library_list):
         result.append(rekord_dict) 
     
     return result    
-        
+def dicts_to_object(library_dict):
+    """Funkcja odczytuje plik biblioteka.json i zamienia go na liste obiektów"""
+    result = []
+    for record in library_dict:
+        if record["type"] == "Film":
+            film = Film(
+            title = record["title"],
+            production_year = record["year"],
+            genre = record["genre"], 
+            views_number = record["views"]
+            )
+            result.append(film)
+        else:
+            serial = Serial(
+            title = record["title"],
+            production_year = record["year"],
+            genre = record["genre"], 
+            views_number = record["views"],
+            episode_number = record["episode_number"],
+            season_number = record["season_number"]
+            )
+            result.append(serial)
+    return result    
         
             
 if __name__ == "__main__":  
     today_datetime = datetime.now().strftime("%d.%m.%Y")
     library_list = []
-    library_dict = {}
-    top = []     
+    mntop = []     
     loaded_data = []
     print("Biblioteka filmów")
-    library_list = populate_library()
+
+    while True:
+        x = int_input("Wczytać istniejącą listę: wpisz 1, utworzyc nową losową listę: wpisz 2 ")
+        if x == 1:
+            with open("biblioteka.json", "r", encoding="utf-8") as f:
+                library_dict = json.load(f)
+                logging.debug(f"wczytano plik bibliotek.json i przekazano tam dane z library_dict")
+            library_list = dicts_to_object(library_dict)
+            break
+        if x == 2:
+            library_list = populate_library()
+            library_dict = library_to_dicts(library_list)
+            break
+
     use_generate_views()
     print(f"Najpopularniejsze filmy i seriale dnia {today_datetime}: ")
     top = top_titles(choose_content_type())
@@ -214,14 +248,13 @@ if __name__ == "__main__":
             print(f"nr{i}: {record.title}, liczba wyświetleń {record.views_number}")
         else:
             print(f"nr{i}: {record.title}, S{record.season_number:02d}E{record.episode_number:02d} liczba wyświetleń {record.views_number}")
-   
-    library_dict = library_to_dicts(library_list)
-    with open("bibliotek.json", "w", encoding="utf-8") as record:
-        json.dump(library_dict, record, ensure_ascii=False, indent=4)
-        logging.debug(f"utworzono plik bibliotek.json i przekazano tam dane z library_dict")
+    library_dict = library_to_dicts(library_list) 
+    with open("biblioteka.json", "w", encoding="utf-8") as record:
+            json.dump(library_dict, record, ensure_ascii=False, indent=4)
+            logging.debug(f"utworzono plik bibliotek.json i przekazano tam dane z library_dict")
+             
 
-    with open("biblioteka.json", "r", encoding="utf-8") as f:
-        library_dict = json.load(f)
-        logging.debug(f"wczytano plik bibliotek.json i przekazano tam dane z library_dict")
-
+       
+        
+    
     

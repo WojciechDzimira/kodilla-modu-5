@@ -91,8 +91,6 @@ def use_generate_views():
 def top_titles(content_type):
     """funkcja wyświetla wybraną ilość najpopularniejszych tytułów w bibliotece"""
     top_views_list = []
-    
-
     top_views_list = sorted(library_list, key=lambda x: x.views_number, reverse=True)
     top_views = int_input("Jaką liczbę najpopularniejszych tytułów wyświetlić? Podaj liczbę całkowotą większą od 0: ")
 

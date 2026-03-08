@@ -203,6 +203,7 @@ if __name__ == "__main__":
     library_list = []
     library_dict = {}
     top = []     
+    loaded_data = []
     print("Biblioteka filmów")
     library_list = populate_library()
     use_generate_views()
@@ -215,5 +216,12 @@ if __name__ == "__main__":
             print(f"nr{i}: {record.title}, S{record.season_number:02d}E{record.episode_number:02d} liczba wyświetleń {record.views_number}")
    
     library_dict = library_to_dicts(library_list)
-    with open("bibliotek.json", "w", encoding="utf-8") as f:
-        json.dump(library_dict, f, ensure_ascii=False, indent=4)
+    with open("bibliotek.json", "w", encoding="utf-8") as record:
+        json.dump(library_dict, record, ensure_ascii=False, indent=4)
+        logging.debug(f"utworzono plik bibliotek.json i przekazano tam dane z library_dict")
+
+    with open("biblioteka.json", "r", encoding="utf-8") as f:
+        library_dict = json.load(f)
+        logging.debug(f"wczytano plik bibliotek.json i przekazano tam dane z library_dict")
+
+    

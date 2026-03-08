@@ -215,5 +215,5 @@ if __name__ == "__main__":
             print(f"nr{i}: {record.title}, S{record.season_number:02d}E{record.episode_number:02d} liczba wyświetleń {record.views_number}")
    
     library_dict = library_to_dicts(library_list)
-    with open("dbibliotek.json", "w", encoding="utf-8") as f:
+    with open("bibliotek.json", "w", encoding="utf-8") as f:
         json.dump(library_dict, f, ensure_ascii=False, indent=4)

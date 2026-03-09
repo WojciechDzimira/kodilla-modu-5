@@ -5,34 +5,43 @@ fake = Faker('pl_PL')
 from datetime import datetime
 logging.basicConfig(level=logging.DEBUG)
 
-class Film:
-    """ klasa reprezentująca filmy """
-    def __init__(self, title, production_year, genre, views_number, **kwargs):
+
+class Title:
+    """klasa reprezentująca rekord biblioteki"""
+    def __init__(self, title, year, genre, views_number):
         self.title = title
-        self.year = production_year
+        self.year = year
         self.genre = genre
         self.views_number = views_number
-        logging.debug(f"Do biblioteki dodano film {title} {production_year}")
+class Film(Title):
+    """ klasa reprezentująca filmy, dziedzicząca po klasie Title """
+    def __init__(self, title, year, genre, views_number):
+        super().__init__(
+            title = title, 
+            year = year, 
+            genre = genre,
+            views_number = views_number)
+        logging.debug(f"Do biblioteki dodano film {title} {year}")
     def play(self):
-        """metoda wyświetla tytuł i rok wydania filmu"""
+        """metoda wyświetla tytuł i rok wydania filmu oraz dodaje 1 do odtworzeń"""
         print(f"{self.title} {self.year}.")
         self.views_number += 1
 
-class Serial(Film):
-    """ klasa reprezentująca seriale, dziedzicząca po klasie Film """
-    def __init__(self, title, production_year, genre, views_number, episode_number, season_number, **kwargs):
+class Serial(Title):
+    """ klasa reprezentująca seriale, dziedzicząca po klasie Title """
+    def __init__(self, title, year, genre, views_number, episode_number, season_number):
         super().__init__(
             title = title, 
-            production_year = production_year, 
-            genre = genre, 
-            views_number = views_number, 
-            **kwargs)
+            year = year, 
+            genre = genre,
+            views_number = views_number
+        )
         self.episode_number = episode_number
         self.season_number = season_number
-        logging.debug(f"Rozszerzono bibliotekę o serial: {title}, sezon:{self.season_number:02}, odcinek: {self.episode_number:02}")
+        logging.debug(f"Rozszerzono bibliotekę o serial: {title}, sezon:{self.season_number:02d}, odcinek: {self.episode_number:02d}")
     def play(self):
-        """metoda wyświetla tytuł numer sezonu i nr odcinka"""
-        print(f"{self.title} S{self.season_number:02}E{self.episode_number:02}.")
+        """metoda wyświetla tytuł numer sezonu i nr odcinka oraz dodaje 1 do odtworzeń"""
+        print(f"{self.title} S{self.season_number:02d} E{self.episode_number:02d}.")
         self.views_number += 1
     
 def int_input(text):
@@ -59,7 +68,8 @@ def choose_content_type():
             return choice
         else:
             print("Błąd, wpisz jeszcze raz")  
-            logging.warning(f"Użytkownik wprowadził niepoprawną wartość")   
+            logging.warning(f"Użytkownik wprowadził niepoprawną wartość")  
+    
 
 def get_movies():
     """funkcja filtruje listę i zwraca tylko filmy"""
@@ -81,7 +91,6 @@ def generate_views():
     """funkcja wybiera element z biblioteki i dodaje mu losowe wyświetlenia w zakresie od 1 do 100"""
     record = random.randrange(len(library_list))
     library_list[record].views_number += random.randint(1, 100)
-    return
 
 def use_generate_views():
     """funkcja uruchamia funkcje generate_views() 10 razy"""
@@ -120,17 +129,20 @@ def episode_number(serial_title):
             filtered.append(record)
     return len(filtered)
 
-def add_serial_season(title, year, genre, views_number, episode_number, season_number):
+def add_serial_season(title, year, genre, views_number, season_number):
     """Funkcja dodaje cały sezon serialu"""
-    serial = Serial(
-        title = title, 
-        production_year = year,
-        genre = genre,
-        views_number = views_number,
-        episode_number = episode_number,
-        season_number = season_number 
-        )
-    return(serial)
+    
+    for episode in range(1, 16):
+        serial = Serial(
+            title = title, 
+            year = year,
+            genre = genre,
+            views_number = views_number,
+            season_number = season_number,
+            episode_number = episode
+             )
+        library_list.append(serial)
+    
 
 def populate_library():
     """funkcja wypełnia biblioteke losowymi danymi filmów i seriali używając faker"""
@@ -144,7 +156,7 @@ def populate_library():
         for i in range(number_of_films):
             film = Film(
             title = fake.catch_phrase(),
-            production_year = fake.year(),
+            year = fake.year(),
             genre = fake.random_element(genre_list), 
             views_number = 0
             )
@@ -153,14 +165,12 @@ def populate_library():
     if number_of_serials > 0:
         for i in range(number_of_serials):
             title = fake.catch_phrase()
-            production_year = fake.year()
+            year = fake.year()
             genre = fake.random_element(genre_list) 
-            for x in range(3):
-                for z in range(15):
-                    season_number = x + 1
-                    episodes_number = z +1
-                    views_number = 0
-                    library_list.append(add_serial_season(title, production_year, genre, views_number, episodes_number, season_number))
+            views_number = 0
+            for season in range(1, 4):
+                add_serial_season(title, year, genre, views_number, season)
+
 
     return library_list
 

@@ -54,10 +54,10 @@ def int_input(text):
                 return number
             else:
                 print("to nie jest dodatnia liczba całkowita, wprowadz jeszcze raz.")
-                logging.warning(f"Użytkownik wprowadził liczbę ujemną")
+                logging.warning("Użytkownik wprowadził liczbę ujemną")
         except ValueError:
             print("to nie jest liczba całkowita, wprowadz jeszcze raz.")
-            logging.warning(f"Użytkownik wprowadził wartośc nie będącą liczbą")
+            logging.warning("Użytkownik wprowadził wartośc nie będącą liczbą")
 
 def choose_content_type():
     """"Funkcja wyboru rodzaju wyświetlanych najpopularniejszych tytułów z biblioteki"""
@@ -68,7 +68,7 @@ def choose_content_type():
             return choice
         else:
             print("Błąd, wpisz jeszcze raz")  
-            logging.warning(f"Użytkownik wprowadził niepoprawną wartość")  
+            logging.warning("Użytkownik wprowadził niepoprawną wartość")  
     
 
 def get_movies():
@@ -182,7 +182,7 @@ def search(text):
             return record
            
     print("Brak wyszukiwanego tytułu w bibliotece")
-    logging.warning(f"Użytkownik próbował wyszukać tytuł którego nie ma w bibliotece")
+    logging.warning("Użytkownik próbował wyszukać tytuł którego nie ma w bibliotece")
     return None
     
         

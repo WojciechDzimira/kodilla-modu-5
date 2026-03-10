@@ -203,7 +203,7 @@ class Library:
                 "genre": record.genre,
                 "views": record.views_number,
             }
-           if isinstance(record, Serial):
+            if isinstance(record, Serial):
                 rekord_dict["episode_number"] = record.episode_number
                 rekord_dict["season_number"] = record.season_number
             

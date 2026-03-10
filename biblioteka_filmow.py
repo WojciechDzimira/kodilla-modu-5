@@ -68,7 +68,7 @@ class Library:
         """funkcja filtruje listę i zwraca tylko filmy"""
         film_list = []
         for record in self.library:
-            if type(record) == Film:
+            if isinstance(record, Film):
                 film_list.append(record)
         return sorted(film_list, key=lambda x: x.title)
     
@@ -76,7 +76,7 @@ class Library:
         """funkcja filtruje liste i zwraca tylko seriale"""
         serial_list = []
         for record in self.library:
-            if type(record) == Serial:
+            if isinstance(record, Serial):
                 serial_list.append(record)
         return sorted(serial_list, key=lambda x: x.title)
 
@@ -103,7 +103,7 @@ class Library:
         if content_type == 1:  
             filtered = []
             for record in top_views_list:
-                if type(record) == Film:
+                if isinstance(record, Film):
                     filtered.append(record)
             return filtered[:top_views]
         
@@ -111,7 +111,7 @@ class Library:
         elif content_type == 2:  
             filtered = []
             for record in top_views_list:
-                if type(record) == Serial:
+                if isinstance(record, Serial):
                     filtered.append(record)
             return filtered[:top_views]
         
@@ -178,7 +178,8 @@ class Library:
                 views_number = 0
                 for season in range(1, 4):
                     self.add_serial_season(title, year, genre, views_number, season)
-
+            return self.library
+    
     def search(self, text):
         """funkcja wyszukuje film lub serial po jego tytule"""
         text = text.lower()
@@ -196,13 +197,13 @@ class Library:
         for i, record in enumerate(self.library, start=1): 
             rekord_dict = {   
                 "record_id" : i,            
-                "type": "Film" if type(record) == Film else "Serial",  
+                "type": "Film" if isinstance(record, Film) else "Serial",  
                 "title": record.title,
                 "year": record.year,
                 "genre": record.genre,
                 "views": record.views_number,
             }
-            if type(record) == Serial:
+           if isinstance(record, Serial):
                 rekord_dict["episode_number"] = record.episode_number
                 rekord_dict["season_number"] = record.season_number
             
@@ -263,7 +264,7 @@ if __name__ == "__main__":
     print(f"Najpopularniejsze filmy i seriale dnia {today_datetime}: ")
     top = library_list.top_titles(library_list.choose_content_type())
     for i, record in enumerate (top, start=1):
-        if type(record) == Film:
+        if isinstance(record, Film):
             print(f"nr{i}: {record.title}, liczba wyświetleń {record.views_number}")
         else:
             print(f"nr{i}: {record.title}, S{record.season_number:02d}E{record.episode_number:02d} liczba wyświetleń {record.views_number}")

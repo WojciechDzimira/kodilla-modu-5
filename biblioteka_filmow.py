@@ -24,7 +24,7 @@ class Film(Title):
         logging.debug(f"Do biblioteki dodano film {title} {year}")
     def play(self):
         """metoda wyświetla tytuł i rok wydania filmu oraz dodaje 1 do odtworzeń"""
-        print(f"{self.title} {self.year}.")
+        logging.debug(f"wyświetlono {self.title} {self.year}.")
         self.views_number += 1
 
 class Serial(Title):
@@ -41,7 +41,7 @@ class Serial(Title):
         logging.debug(f"Rozszerzono bibliotekę o serial: {title}, sezon:{self.season_number:02d}, odcinek: {self.episode_number:02d}")
     def play(self):
         """metoda wyświetla tytuł numer sezonu i nr odcinka oraz dodaje 1 do odtworzeń"""
-        print(f"{self.title} S{self.season_number:02d} E{self.episode_number:02d}.")
+        logging.debug(f"wyświetlono{self.title} S{self.season_number:02d} E{self.episode_number:02d}.")
         self.views_number += 1
     
 def int_input(text):
@@ -87,21 +87,21 @@ def get_series():
             serial_list.append(record)
     return sorted(serial_list, key=lambda x: x.title)
     
-def generate_views():
+def generate_views(library_list):
     """funkcja wybiera element z biblioteki i dodaje mu losowe wyświetlenia w zakresie od 1 do 100"""
     record = random.randrange(len(library_list))
     library_list[record].views_number += random.randint(1, 100)
 
-def use_generate_views():
+def use_generate_views(library_list):
     """funkcja uruchamia funkcje generate_views() 10 razy"""
     for _ in range(10):
-        generate_views()
+        generate_views(library_list)
 
-def top_titles(content_type):
+def top_titles(library_list, content_type, top_views):
     """funkcja wyświetla wybraną ilość najpopularniejszych tytułów w bibliotece"""
     top_views_list = []
     top_views_list = sorted(library_list, key=lambda x: x.views_number, reverse=True)
-    top_views = int_input("Jaką liczbę najpopularniejszych tytułów wyświetlić? Podaj liczbę całkowotą większą od 0: ")
+    
 
     if content_type == 1:  
         filtered = []
@@ -144,14 +144,11 @@ def add_serial_season(title, year, genre, views_number, season_number):
         library_list.append(serial)
     
 
-def populate_library():
+def populate_library(library_list, number_of_films, number_of_serials):
     """funkcja wypełnia biblioteke losowymi danymi filmów i seriali używając faker"""
 
     genre_list = ["dramaty", "komedia", "tragedia", "fantasy", "horror", "przygodowy", "Sci-fi", "akcja"]
-    print("UZUPEŁNIANIE BIBLIOTEKI LOSOWYMI FILMAMI/SERIALAMI")
-    number_of_films = int_input("Podaj ile losowych filmów chcesz mieć w bibliotece? Wpisz liczbę całkowitą lub 0: ")
-    number_of_serials = int_input("Podaj ile losowych seriali ma znaleźć się w bibliotece: kazdy bedzie miał 3 sezony po 15 odcinków. Wpisz liczbę całkowitą lub 0: ")
-
+    
     if number_of_films > 0:
         for i in range(number_of_films):
             film = Film(
@@ -181,25 +178,35 @@ def search(text):
         if text == record.title.lower():
             return record
            
-    print("Brak wyszukiwanego tytułu w bibliotece")
     logging.warning("Użytkownik próbował wyszukać tytuł którego nie ma w bibliotece")
     return None
     
         
         
-            
-if __name__ == "__main__":  
-    today_datetime = datetime.now().strftime("%d.%m.%Y")
-    library_list = []
+while True:            
+    if __name__ == "__main__":  
+        today_datetime = datetime.now().strftime("%d.%m.%Y")
+        library_list = []
+        top = []     
+        print("Biblioteka filmów")
+        print("Uzupełnianie biblioteki")
+        number_of_films = int_input("Podaj ile losowych filmów chcesz mieć w bibliotece? Wpisz liczbę całkowitą lub 0: ")
+        number_of_serials = int_input("Podaj ile losowych seriali ma znaleźć się w bibliotece: kazdy bedzie miał 3 sezony po 15 odcinków. Wpisz liczbę całkowitą lub 0: ")
+        library_list = populate_library(library_list, number_of_films, number_of_serials)
 
-    top = []     
-    print("Biblioteka filmów")
-    library_list = populate_library()
-    use_generate_views()
-    print(f"Najpopularniejsze filmy i seriale dnia {today_datetime}: ")
-    top = top_titles(choose_content_type())
-    for i, record in enumerate (top, start=1):
-        if type(record) == Film:
-            print(f"nr{i}: {record.title}, liczba wyświetleń {record.views_number}")
-        else:
-            print(f"nr{i}: {record.title}, S{record.season_number:02d}E{record.episode_number:02d} liczba wyświetleń {record.views_number}")
+        use_generate_views(library_list)
+
+        print(f"Najpopularniejsze filmy i seriale dnia {today_datetime}: ")
+        choice = choose_content_type()
+        top_views = int_input("Jaką liczbę najpopularniejszych tytułów wyświetlić? Podaj liczbę całkowotą większą od 0: ")
+        top = top_titles(library_list, choice, top_views)
+        for i, record in enumerate (top, start=1):
+            if type(record) == Film:
+                print(f"nr{i}: {record.title}, liczba wyświetleń {record.views_number}")
+            else:
+                print(f"nr{i}: {record.title}, S{record.season_number:02d}E{record.episode_number:02d} liczba wyświetleń {record.views_number}")
+
+    
+    choice = input("Ponownie? (T/n): ").lower()
+    if choice != "t":
+        break

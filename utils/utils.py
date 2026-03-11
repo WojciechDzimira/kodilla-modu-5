@@ -1,3 +1,4 @@
+import logging
 def int_input(text):
     """Funkcja prosi uzytkownika o liczbę całkowitą i sprawdza czy 
     uzytkownik faktycznie wprowadził liczbę calkowita"""

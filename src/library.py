@@ -6,20 +6,7 @@ fake = Faker('pl_PL')
 logging.basicConfig(level=logging.DEBUG)
 
 
-def int_input(text):
-    """Funkcja prosi uzytkownika o liczbę całkowitą i sprawdza czy 
-    uzytkownik faktycznie wprowadził liczbę calkowita"""
-    while True:
-        try:
-            number = int(input(f"{text}"))
-            if number > -1:
-                return number
-            else:
-                print("to nie jest dodatnia liczba całkowita, wprowadz jeszcze raz.")
-                logging.warning("Użytkownik wprowadził liczbę ujemną")
-        except ValueError:
-            print("to nie jest liczba całkowita, wprowadz jeszcze raz.")
-            logging.warning("Użytkownik wprowadził wartośc nie będącą liczbą")
+
 class Library:
     """ klasa reprezentująca biblioteke """
     def __init__(self):
@@ -54,11 +41,11 @@ class Library:
             self.generate_views()
 
 
-    def top_titles(self, content_type):
+    def top_titles(self, content_type, top_views):
         """funkcja zwraca wybraną ilość najpopularniejszych tytułów w bibliotece"""
         top_views_list = []
         top_views_list = sorted(self.library, key=lambda x: x.views_number, reverse=True)
-        top_views = int_input("Jaką liczbę najpopularniejszych tytułów wyświetlić? Podaj liczbę całkowotą większą od 0: ")
+        
 
         if content_type == 1:  
             filtered = []
@@ -78,16 +65,7 @@ class Library:
         elif content_type == 3:  
             return top_views_list[:top_views]
         
-    def choose_content_type(self):
-        """"Funkcja wyboru rodzaju wyświetlanych najpopularniejszych tytułów z biblioteki"""
-        print("1: Najpopularniejsze Filmy \n2: Najpopularniejsze Seriale \n3: Najpopularniejsze Ogólnie")
-        while True:
-            choice = int_input("Wpisz 1, 2 lub 3: ")
-            if choice  in {1, 2, 3}:
-                return choice
-            else:
-                print("Błąd, wpisz jeszcze raz")  
-                logging.warning("Użytkownik wprowadził niepoprawną wartość") 
+    
 
 
     def episode_number(self, serial_title):
@@ -112,14 +90,10 @@ class Library:
             )
             self.library.append(serial)
 
-    def populate_library(self):
+    def populate_library(self, number_of_films, number_of_serials):
         """funkcja wypełnia biblioteke losowymi danymi filmów i seriali używając faker"""
 
         genre_list = ["dramaty", "komedia", "tragedia", "fantasy", "horror", "przygodowy", "Sci-fi", "akcja"]
-        print("UZUPEŁNIANIE BIBLIOTEKI LOSOWYMI FILMAMI/SERIALAMI")
-        number_of_films = int_input("Podaj ile losowych filmów chcesz mieć w bibliotece? Wpisz liczbę całkowitą lub 0: ")
-        number_of_serials = int_input("Podaj ile losowych seriali ma znaleźć się w bibliotece: kazdy bedzie miał 3 sezony po 15 odcinków. Wpisz liczbę całkowitą lub 0: ")
-
         if number_of_films > 0:
             for i in range(number_of_films):
                 film = Film(
@@ -147,7 +121,7 @@ class Library:
             if text == record.title.lower():
                 return record
             
-        print("Brak wyszukiwanego tytułu w bibliotece")
+        logging.debug("Brak wyszukiwanego tytułu w bibliotece")
         logging.warning("Użytkownik próbował wyszukać tytuł którego nie ma w bibliotece")
         return None
 

@@ -12,3 +12,15 @@ def int_input(text):
         except ValueError:
             print("to nie jest liczba całkowita, wprowadz jeszcze raz.")
             logging.warning("Użytkownik wprowadził wartośc nie będącą liczbą")
+
+
+def choose_content_type():
+        """"Funkcja wyboru rodzaju wyświetlanych najpopularniejszych tytułów z biblioteki"""
+        print("1: Najpopularniejsze Filmy \n2: Najpopularniejsze Seriale \n3: Najpopularniejsze Ogólnie")
+        while True:
+            choice = int_input("Wpisz 1, 2 lub 3: ")
+            if choice  in {1, 2, 3}:
+                return choice
+            else:
+                print("Błąd, wpisz jeszcze raz")  
+                logging.warning("Użytkownik wprowadził niepoprawną wartość") 
